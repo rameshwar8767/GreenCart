@@ -205,3 +205,127 @@ The `Categories` component is a grid-based layout that displays various product 
 1. Import the `Categories` component into your application:
    ```jsx
    import Categories from './components/Categories';
+
+
+   # ProductCard Component
+
+The `ProductCard` component is a reusable card component designed to display product details in the GreenCart application. It provides functionality for viewing product information, displaying ratings, and managing cart actions (add, update, or remove items).
+
+## Features
+
+1. **Product Display**:
+   - Displays the product image, name, category, and pricing details.
+   - Shows the original price and the discounted offer price with a strikethrough for the original price.
+
+2. **Ratings**:
+   - Displays a 5-star rating system with filled and unfilled stars.
+   - The current implementation shows a static rating of 4 stars.
+
+3. **Cart Management**:
+   - Allows users to add products to the cart.
+   - Provides buttons to increase or decrease the quantity of the product in the cart.
+   - Automatically removes the product from the cart if the quantity is reduced to zero.
+
+4. **Responsive Design**:
+   - The component is styled using Tailwind CSS and adapts to different screen sizes.
+
+5. **Hover Effects**:
+   - The product image scales up slightly when hovered over, providing a smooth transition effect.
+
+## Code Overview
+
+### Props
+- **`product`**: An object containing the product details. The expected structure includes:
+  - `image`: An array of image URLs for the product.
+  - `name`: The name of the product.
+  - `category`: The category of the product.
+  - `offerPrice`: The discounted price of the product.
+  - `price`: The original price of the product.
+  - `_id`: A unique identifier for the product.
+
+### Context
+The component uses the `useAppContext` hook to access shared state and functions from the `AppContext`. These include:
+- **`currency`**: The currency symbol for displaying prices.
+- **`cartItems`**: An object representing the current items in the cart, with product IDs as keys and quantities as values.
+- **`addToCart(itemId)`**: Adds a product to the cart.
+- **`updateCartItem(itemId, quantity)`**: Updates the quantity of a product in the cart.
+- **`removeFromCart(itemId)`**: Removes a product from the cart.
+- **`navigate`**: A function for programmatic navigation.
+
+### JSX Structure
+1. **Card Container**:
+   - A bordered and rounded container with padding and a white background:
+     ```jsx
+     <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
+     ```
+
+2. **Product Image**:
+   - Displays the first image from the `product.image` array.
+   - Includes a hover effect to scale the image:
+     ```jsx
+     <img className="group-hover:scale-105 transition max-w-26 md:max-w-36" src={product.image[0]} alt={product.name} />
+     ```
+
+3. **Product Details**:
+   - Displays the product category, name, and ratings:
+     ```jsx
+     <p>{product.category}</p>
+     <p className="text-gray-700 font-medium text-lg truncate w-full">{product.name}</p>
+     <div className="flex items-center gap-0.5">
+       {Array(5).fill('').map((_, i) => (
+         <img key={i} className='md:w-3.5 w3' src={i < 4 ? assets.star_icon : assets.star_dull_icon} alt="" />
+       ))}
+       <p>(4)</p>
+     </div>
+     ```
+
+4. **Pricing**:
+   - Displays the offer price and the original price with a strikethrough:
+     ```jsx
+     <p className="md:text-xl text-base font-medium text-indigo-500">
+       {currency}${product.offerPrice} {" "}
+       <span className="text-gray-500/60 md:text-sm text-xs line-through">
+         {currency}${product.price}
+       </span>
+     </p>
+     ```
+
+5. **Cart Actions**:
+   - If the product is not in the cart, an "Add" button is displayed:
+     ```jsx
+     <button className="flex items-center justify-center gap-1 bg-indigo-100 border border-indigo-300 md:w-[80px] w-[64px] h-[34px] rounded text-indigo-600 font-medium" onClick={() => addToCart(product._id)}>
+       <img src={assets.cart_icon} alt="cart" />
+       Add
+     </button>
+     ```
+   - If the product is in the cart, buttons to increase or decrease the quantity are displayed:
+     ```jsx
+     <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-indigo-500/25 rounded select-none">
+       <button onClick={() => updateCartItem(product._id, Math.max(cartItems[product._id] - 1, 0))} className="cursor-pointer text-md px-2 h-full">
+         -
+       </button>
+       <span className="w-5 text-center">{cartItems[product._id]}</span>
+       <button onClick={() => updateCartItem(product._id, cartItems[product._id] + 1)} className="cursor-pointer text-md px-2 h-full">
+         +
+       </button>
+     </div>
+     ```
+
+### Styling
+- The component uses Tailwind CSS for styling.
+- Key classes include:
+  - `border`, `rounded-md`: For the card container.
+  - `group-hover:scale-105`: For the hover effect on the product image.
+  - `text-gray-*`, `text-indigo-*`: For text and pricing styles.
+  - `flex`, `gap-*`: For layout and spacing.
+
+## Dependencies
+- **`react`**: For building the component.
+- **[useAppContext](http://_vscodecontentref_/2)**: For accessing shared state and functions.
+- **[assets](http://_vscodecontentref_/3)**: For importing icons and images.
+
+## How to Use
+
+1. Import the [ProductCard](http://_vscodecontentref_/4) component into your application:
+   ```jsx
+   import ProductCard from './components/ProductCard';
