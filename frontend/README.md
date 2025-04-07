@@ -329,3 +329,5 @@ The component uses the `useAppContext` hook to access shared state and functions
 1. Import the [ProductCard](http://_vscodecontentref_/4) component into your application:
    ```jsx
    import ProductCard from './components/ProductCard';
+
+   
