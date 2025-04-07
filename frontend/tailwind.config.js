@@ -10,6 +10,7 @@ export default {
         primary: 'var(--color-primary)',
         'primary-dull': 'var(--color-primary-dull)',
       },
+      
     }, // 🛠️ this closing brace was missing
   },
   plugins: [],
