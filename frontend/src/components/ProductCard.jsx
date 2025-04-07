@@ -1,53 +1,88 @@
-import React from 'react'
+import React from 'react';
 import { assets } from '../assets/assets';
 import { useAppContext } from '../context/AppContext';
 
-const ProductCard = ({product}) => {
- 
-    const {currency,cartItems, addToCart, updateCartItem, removeFromCart, navigate} = useAppContext()
-    
 
-    return product && (
-        <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
-            <div className="group cursor-pointer flex items-center justify-center px-2">
-                <img className="group-hover:scale-105 transition max-w-26 md:max-w-36" src={product.image[0]} alt={product.name} />
-            </div>
-            <div className="text-gray-500/60 text-sm">
-                <p>{product.category}</p>
-                <p className="text-gray-700 font-medium text-lg truncate w-full">{product.name}</p>
-                <div className="flex items-center gap-0.5">
-                    {Array(5).fill('').map((_, i) => (
-                        
-                            <img key={i} className='md:w-3.5 w3' src={i < 4 ? assets.star_icon : assets.star_dull_icon} alt="" srcset="" />
-                    ))}
-                    <p>(4)</p>
-                </div>
-                <div className="flex items-end justify-between mt-3">
-                    <p className="md:text-xl text-base font-medium text-indigo-500">
-                        {currency}${product.offerPrice} {" "} <span className="text-gray-500/60 md:text-sm text-xs line-through">{currency}${product.price}</span>
-                    </p>
-                    <div className="text-indigo-500">
-                        {!cartItems[product._id] ? (
-                            <button  className="flex items-center justify-center gap-1 bg-indigo-100 border border-indigo-300 md:w-[80px] w-[64px] h-[34px] rounded text-indigo-600 font-medium" onClick={() => setCount(1)} >
-                                <img src={assets.cart_icon} alt="cart" />
-                                Add
-                            </button>
-                        ) : (
-                            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-indigo-500/25 rounded select-none">
-                                <button onClick={() => setCount((prev) => Math.max(prev - 1, 0))} className="cursor-pointer text-md px-2 h-full" >
-                                    -
-                                </button>
-                                <span className="w-5 text-center">{cartItems[product._id]}</span>
-                                <button onClick={() => setCount((prev) => prev + 1)} className="cursor-pointer text-md px-2 h-full" >
-                                    +
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+
+
+const ProductCard = ({ product }) => {
+  const {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    currency
+  } = useAppContext();
+
+  if (!product) return null;
+
+  const isInCart = !!cartItems[product._id];
+  const rating = 4;
+
+  return (
+    <div className="border border-gray-300 rounded-lg bg-white shadow-sm hover:shadow-md transition-all md:px-4 px-3 py-3 min-w-56 max-w-56 w-full">
+      <div className="group cursor-pointer flex items-center justify-center px-2">
+        <img
+          className="group-hover:scale-105 transition-transform max-w-26 md:max-w-36 object-contain"
+          src={product.image[0]}
+          alt={product.name}
+        />
+      </div>
+
+      <div className="text-sm text-gray-600 mt-2 space-y-1">
+        <p className="text-gray-400">{product.category}</p>
+        <p className="text-gray-800 font-semibold text-lg truncate">{product.name}</p>
+
+        <div className="flex items-center gap-1">
+          {Array(5).fill().map((_, i) => (
+            <img
+              key={i}
+              className="w-4 h-4"
+              src={i < rating ? assets.star_icon : assets.star_dull_icon}
+              alt={`star-${i + 1}`}
+            />
+          ))}
+          <span className="text-xs">(4)</span>
         </div>
-    );
-}
 
-export default ProductCard
+        <div className="flex items-center justify-between mt-3">
+          <p className="text-primary font-semibold md:text-xl text-base">
+            {currency}{product.offerPrice}
+            <span className="line-through text-xs text-gray-400 ml-1">
+              {currency}{product.price}
+            </span>
+          </p>
+
+          <div onClick={(e) => e.stopPropagation()} className="text-primary">
+            {!isInCart ? (
+              <button
+                onClick={() => addToCart(product._id)}
+                className="flex items-center gap-1 bg-primary/10 border border-primary/40 md:w-[80px] w-[64px] h-[34px] rounded hover:bg-primary/20 transition text-sm justify-center"
+              >
+                <img src={assets.cart_icon} alt="cart" />
+                Add
+              </button>
+            ) : (
+              <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary/10 rounded select-none">
+                <button
+                  onClick={() => removeFromCart(product._id)}
+                  className="px-2 text-md hover:text-red-500"
+                >
+                  -
+                </button>
+                <span className="w-5 text-center">{cartItems[product._id]}</span>
+                <button
+                  onClick={() => addToCart(product._id)}
+                  className="px-2 text-md hover:text-green-600"
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
