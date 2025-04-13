@@ -44,6 +44,49 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
 })
 
+// Login User : /api/user/login
+
+export const loginUser = asyncHandler(async (req, res) => {
+    try {
+        const { email,  password } = req.body;
+
+      
+        if (!email && !password) {
+            return res.status(400).json({ success: false, message: "Email or password is required" });  
+        }
+      
+        // Find user by username or email
+        const user = await User.findOne({ email });
+        if (!user) {
+          console.error("User not found with provided credentials:", { email, username });
+          return res.json({ success: false, message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if(!isMatch) {
+            console.error("Invalid credentials for user:", { email});
+            return res.json({ success: false, message: "Invalid credentials" });
+        }
+      
+        // Generate JWT token
+        // const token = user.generateAuthToken();
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d",
+        });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+        return res.json({ success: true, message: "User logged in successfully", user });
+    } catch (error) {
+        console.error("Error logging in user:", error);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+})
+
  
   
  
