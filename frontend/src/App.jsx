@@ -38,7 +38,7 @@ const {showUserLogin, isSeller} = useAppContext()
           <Route path="/seller" element={isSeller ? <SellerLayout/> : <SellerLogin/>} >
     
             <Route index element={isSeller ? <AddProduct/> : null}/>
-            <Route path='product-list'  element={<ProductList/>}/>
+            <Route path='products-list'  element={<ProductList/>}/>
             <Route path='orders' element={<Orders/>}/>
           </Route>
 
