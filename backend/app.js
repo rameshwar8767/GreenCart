@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import connectDB from './configs/db.js';
 import userRouter from "./routes/user.routes.js";
+import sellerRouter from "./routes/seller.routes.js";
 
 dotenv.config({
     path:'./.env'
@@ -50,6 +51,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/user', userRouter);
+app.use('/api/seller', sellerRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
